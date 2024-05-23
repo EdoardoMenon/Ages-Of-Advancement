@@ -1,3 +1,7 @@
+.app {
+    height: 100vh;
+}
+
 .horizontal-line {
     background: linear-gradient(90deg,
             rgba(224, 225, 226, 0) 0%,

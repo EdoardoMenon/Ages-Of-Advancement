@@ -6,7 +6,7 @@ import HoverPopup from '../hover-popup/HoverPopup';
 
 function Navbar() {
     return (
-        <VStack w="100%" backgroundColor="primary.500" p={2} py={3}>
+        <VStack w="100%" p={2} py={3}>
             <Flex
                 w="100%"
                 direction={{ base: 'column', md: 'row' }}
