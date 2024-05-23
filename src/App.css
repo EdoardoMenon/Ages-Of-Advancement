@@ -1,0 +1,13 @@
+.horizontal-line {
+    background: linear-gradient(90deg,
+            rgba(224, 225, 226, 0) 0%,
+            rgb(224, 225, 226) 49.52%,
+            rgba(224, 225, 226, 0) 100%);
+}
+
+.vertical-line {
+    background: linear-gradient(0deg,
+            rgba(224, 225, 226, 0) 0%,
+            rgb(224, 225, 226) 49.52%,
+            rgba(224, 225, 226, 0) 100%);
+}

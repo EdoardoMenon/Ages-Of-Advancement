@@ -23,41 +23,99 @@ const styles: ChakraTheme['styles'] = {
             color: 'primaryFontColor',
         },
         h1: {
-            color: 'darkFontColor',
+            color: 'primaryFontColor',
         },
         h2: {
-            color: 'darkFontColor',
+            color: 'primaryFontColor',
         },
         h3: {
-            color: 'extraDarkFontColor',
+            color: 'primaryFontColor',
         },
         h4: {
-            color: 'extraDarkFontColor',
+            color: 'primaryFontColor',
         },
     },
 };
 
 const colors: ChakraTheme['colors'] = {
-    primaryFontColor: toColorVar('gray', 500),
-    darkFontColor: '#2E3646',
-    extraDarkFontColor: '#141414',
+    primaryFontColor: toColorVar('white', 500),
 
     assorted: {
-        sidebarFill: '#F8F9FB',
+        gold: '#f59e0b',
+        green: '#16a34a',
+        red: '#dc2626',
+        silver: '#9ca3af'
     },
 
-    gray: {
-        50: '#C3CAD2',
-        100: '#B7BFC9',
-        200: '#A0ABB7',
-        300: '#8996A6',
-        400: '#718194',
-        500: '#5F6D7E', // primaryFontColor
-        600: '#47515E',
-        700: '#2F363E',
-        800: '#171A1E',
+    black: {
+        DEFAULT: "#000000",
+        50: "#5C5C5C",
+        100: "#525252",
+        200: "#3D3D3D",
+        300: "#292929",
+        400: "#141414",
+        500: "#000000",
+        600: "#000000",
+        700: "#000000",
+        800: "#000000",
+        900: "#000000",
+        950: "#000000",
+    },
+    white: {
+        DEFAULT: "#FFFFFF",
+        50: "#FFFFFF",
+        100: "#FFFFFF",
+        200: "#FFFFFF",
+        300: "#FFFFFF",
+        400: "#FFFFFF",
+        500: "#FFFFFF",
+        600: "#E3E3E3",
+        700: "#C7C7C7",
+        800: "#ABABAB",
+        900: "#8F8F8F",
+        950: "#818181",
+    },
+    'primary': {
+        DEFAULT: '#1A202C',
+        50: '#5E749F',
+        100: '#576B93',
+        200: '#475879',
+        300: '#38455F',
+        400: '#293346',
+        500: '#1A202C',
+        600: '#050609',
+        700: '#000000',
+        800: '#000000',
         900: '#000000',
-        950: '#000000',
+        950: '#000000'
+    },
+    'light-background': {
+        DEFAULT: '#1F2732',
+        50: '#6880A1',
+        100: '#5D7697',
+        200: '#4E627E',
+        300: '#3E4E64',
+        400: '#2F3B4B',
+        500: '#1F2732',
+        600: '#0A0C0F',
+        700: '#000000',
+        800: '#000000',
+        900: '#000000',
+        950: '#000000'
+    },
+    'active-background': {
+        DEFAULT: '#212B3A',
+        50: '#6983AA',
+        100: '#5C78A2',
+        200: '#4D6588',
+        300: '#3F526E',
+        400: '#303E54',
+        500: '#212B3A',
+        600: '#0D1016',
+        700: '#000000',
+        800: '#000000',
+        900: '#000000',
+        950: '#000000'
     },
 };
 
@@ -68,19 +126,20 @@ const theme = extendTheme({
     components: {
         Button: {
             variants: {
-                linkButton: {
-                    bg: 'transparent',
-                    color: 'filter-blue.500',
-                    textDecoration: 'underline',
+                primary: {
+                    bg: "primary.500",
+                    border: "solid white 2px",
+
                     _hover: {
-                        bg: 'transparent',
-                        color: 'filter-blue.600',
+                        color: "white.500",
+                        bg: "primary.400",
                     },
                     _active: {
-                        bg: 'transparent',
-                        color: 'filter-blue.700',
+                        color: "white.300",
+                        bg: "primary.300",
                     },
                 },
+
             },
         },
     },
