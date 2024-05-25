@@ -5,17 +5,13 @@ import { SaveDataProvider } from '../../contexts/SaveDataContext';
 import { ThemeProvider } from '@emotion/react';
 import { muiTheme } from '../../shared/muiTheme';
 
-
 function Providers({ children }: { children: ReactNode }) {
     return (
         <ThemeProvider theme={muiTheme}>
             <ChakraProvider theme={theme}>
-                <SaveDataProvider>
-                    {children}
-                </SaveDataProvider>
+                <SaveDataProvider>{children}</SaveDataProvider>
             </ChakraProvider>
         </ThemeProvider>
-
     );
 }
 

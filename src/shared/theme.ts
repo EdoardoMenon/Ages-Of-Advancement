@@ -3,7 +3,10 @@ import {
     cssVar,
     extendTheme,
     theme as defaultTheme,
+    createMultiStyleConfigHelpers,
 } from '@chakra-ui/react';
+import { tabsAnatomy } from '@chakra-ui/anatomy';
+import { tableAnatomy } from '@chakra-ui/anatomy';
 
 const toColorVar = (name: string, shade?: number | string) =>
     cssVar(
@@ -44,38 +47,38 @@ const colors: ChakraTheme['colors'] = {
         gold: '#f59e0b',
         green: '#16a34a',
         red: '#dc2626',
-        silver: '#9ca3af'
+        silver: '#9ca3af',
     },
 
     black: {
-        DEFAULT: "#000000",
-        50: "#5C5C5C",
-        100: "#525252",
-        200: "#3D3D3D",
-        300: "#292929",
-        400: "#141414",
-        500: "#000000",
-        600: "#000000",
-        700: "#000000",
-        800: "#000000",
-        900: "#000000",
-        950: "#000000",
+        DEFAULT: '#000000',
+        50: '#5C5C5C',
+        100: '#525252',
+        200: '#3D3D3D',
+        300: '#292929',
+        400: '#141414',
+        500: '#000000',
+        600: '#000000',
+        700: '#000000',
+        800: '#000000',
+        900: '#000000',
+        950: '#000000',
     },
     white: {
-        DEFAULT: "#FFFFFF",
-        50: "#FFFFFF",
-        100: "#FFFFFF",
-        200: "#FFFFFF",
-        300: "#FFFFFF",
-        400: "#FFFFFF",
-        500: "#FFFFFF",
-        600: "#E3E3E3",
-        700: "#C7C7C7",
-        800: "#ABABAB",
-        900: "#8F8F8F",
-        950: "#818181",
+        DEFAULT: '#FFFFFF',
+        50: '#FFFFFF',
+        100: '#FFFFFF',
+        200: '#FFFFFF',
+        300: '#FFFFFF',
+        400: '#FFFFFF',
+        500: '#FFFFFF',
+        600: '#E3E3E3',
+        700: '#C7C7C7',
+        800: '#ABABAB',
+        900: '#8F8F8F',
+        950: '#818181',
     },
-    'primary': {
+    primary: {
         DEFAULT: '#1A202C',
         50: '#5E749F',
         100: '#576B93',
@@ -87,7 +90,7 @@ const colors: ChakraTheme['colors'] = {
         700: '#000000',
         800: '#000000',
         900: '#000000',
-        950: '#000000'
+        950: '#000000',
     },
     'light-background': {
         DEFAULT: '#1F2732',
@@ -101,7 +104,7 @@ const colors: ChakraTheme['colors'] = {
         700: '#000000',
         800: '#000000',
         900: '#000000',
-        950: '#000000'
+        950: '#000000',
     },
     'active-background': {
         DEFAULT: '#212B3A',
@@ -115,9 +118,44 @@ const colors: ChakraTheme['colors'] = {
         700: '#000000',
         800: '#000000',
         900: '#000000',
-        950: '#000000'
+        950: '#000000',
     },
 };
+
+const {
+    definePartsStyle: defineTabsStyle,
+    defineMultiStyleConfig: defineTabsConfig,
+} = createMultiStyleConfigHelpers(tabsAnatomy.keys);
+
+const {
+    definePartsStyle: defineTableStyle,
+    defineMultiStyleConfig: defineTableConfig,
+} = createMultiStyleConfigHelpers(tableAnatomy.keys);
+
+const baseStyleTabs = defineTabsStyle(() => ({
+    tab: {
+        _active: {
+            backgroundColor: 'primary.500',
+        },
+        _selected: {
+            color: 'assorted.green',
+        },
+    },
+}));
+
+const baseStyleTable = defineTableStyle(() => ({
+    table: {
+        bg: 'light-background.500',
+    },
+    tbody: {
+        tr: {
+            '&:nth-of-type(odd)': {
+                bg: 'primary.500',
+            },
+            color: 'white',
+        },
+    },
+}));
 
 const theme = extendTheme({
     fonts,
@@ -127,23 +165,29 @@ const theme = extendTheme({
         Button: {
             variants: {
                 primary: {
-                    bg: "primary.500",
-                    border: "solid white 2px",
-
+                    bg: 'primary.500',
+                    border: 'solid white 2px',
+                    borderRadius: '2xl',
                     _hover: {
-                        color: "white.500",
-                        bg: "primary.400",
+                        color: 'white.500',
+                        bg: 'primary.400',
                     },
                     _active: {
-                        color: "white.300",
-                        bg: "primary.300",
+                        color: 'white.300',
+                        bg: 'primary.300',
                     },
                 },
-
             },
         },
+        Tabs: defineTabsConfig({
+            baseStyle: baseStyleTabs,
+        }),
+        Table: defineTableConfig({
+            variants: {
+                darkStriped: baseStyleTable,
+            },
+        }),
     },
 });
 
 export default theme;
-

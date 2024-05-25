@@ -1,9 +1,7 @@
-import React from 'react'
+import ResourceTable from '../resource-table/ResourceTable';
 
 function Resources() {
-    return (
-        <div>Resources</div>
-    )
+    return <ResourceTable />;
 }
 
-export default Resources
+export default Resources;

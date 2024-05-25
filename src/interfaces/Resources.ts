@@ -1,7 +1,17 @@
 export interface Resources {
-    research: number;
-    wood: number;
-    gold: number;
-    food: number;
-    stone: number
+    research: Resource;
+    lumber: Resource;
+    gold: Resource;
+    food: Resource;
+    stone: Resource;
+    copper: Resource;
+    iron: Resource;
+    tin: Resource;
+}
+
+export interface Resource {
+    amount: number;
+    capacity: number;
+    rate: number;
+    isHidden: boolean;
 }
