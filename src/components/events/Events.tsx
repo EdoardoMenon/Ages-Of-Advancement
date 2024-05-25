@@ -9,8 +9,8 @@ function Events() {
             p={2}
             justifyContent="space-between"
             gap={2}
-            borderRight="solid 2px"
-            borderColor="light-background.400"
+            borderRight={{ md: 'solid 2px' }}
+            borderColor={{ md: 'light-background.400' }}
         >
             <Flex direction="column" overflowY="auto" w="100%" gap={1} mr={2}>
                 <Event

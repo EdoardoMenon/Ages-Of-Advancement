@@ -5,6 +5,7 @@ import { Resources } from '../interfaces/Resources';
 import { Buildings } from '../interfaces/Buildings';
 import { canAffordBuilding } from '../helper/Helper';
 import { AllBuildingData } from '../static/BuildingCosts';
+import { AllStaticRates } from '../static/StaticRates';
 
 interface StateType {
     saveData: SaveData;
@@ -13,7 +14,8 @@ interface StateType {
     increaseRate(name: keyof Resources, amount: number): void;
     purchaseBuildingIfPossible(
         buildingName: keyof Buildings,
-        updates: Partial<SaveData>
+        updates: Partial<SaveData>,
+        decreaseFood?: boolean
     ): void;
 }
 
@@ -63,7 +65,8 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
 
     function purchaseBuildingIfPossible(
         buildingName: keyof Buildings,
-        updates: Partial<SaveData>
+        updates: Partial<SaveData>,
+        decreaseFood?: boolean
     ) {
         const buildingCost = AllBuildingData.get(buildingName)?.costs;
 
@@ -88,6 +91,11 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                     };
                 }
 
+                if (decreaseFood) {
+                    updatedResources.food.rate +=
+                        AllStaticRates.humanFoodDeduction;
+                }
+
                 const newSaveData = {
                     ...prevSaveData,
                     resources: updatedResources,
@@ -106,11 +114,15 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
 
                 Object.keys(newResources).forEach((key) => {
                     const resource = newResources[key as keyof Resources];
-                    if (resource.rate > 0) {
-                        const newAmount = Math.min(
-                            resource.amount + resource.rate,
-                            resource.capacity
-                        );
+                    if (resource.rate !== 0) {
+                        const newAmount =
+                            resource.rate > 0
+                                ? Math.min(
+                                      resource.amount + resource.rate,
+                                      resource.capacity
+                                  )
+                                : Math.max(resource.amount + resource.rate, 0);
+
                         newResources[key as keyof Resources] = {
                             ...resource,
                             amount: newAmount,

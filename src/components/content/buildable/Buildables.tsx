@@ -12,7 +12,7 @@ function Buildables() {
     return (
         <Flex direction="column" gap={4}>
             <BuildableContainer headingName="Gathering">
-                <Flex gap={4}>
+                <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
                     <Button
                         variant="primary"
                         onClick={() => gatherResource('food')}
@@ -34,7 +34,7 @@ function Buildables() {
                 </Flex>
             </BuildableContainer>
             <BuildableContainer headingName="Houses">
-                <Flex gap={4}>
+                <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
                     <HoverPopupExpandable
                         content={
                             <BuildingPopup
@@ -47,24 +47,31 @@ function Buildables() {
                             variant="primary"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                purchaseBuildingIfPossible('commonHouses', {
-                                    population: {
-                                        ...saveData.population,
-                                        maxWorkers:
-                                            saveData.population.maxWorkers + 1,
-                                        availableWorkers:
-                                            saveData.population.maxWorkers + 1,
-                                    },
-                                    buildings: {
-                                        ...saveData.buildings,
-                                        commonHouses: {
-                                            ...saveData.buildings.commonHouses,
-                                            owned:
-                                                saveData.buildings.commonHouses
-                                                    .owned + 1,
+                                purchaseBuildingIfPossible(
+                                    'commonHouses',
+                                    {
+                                        population: {
+                                            ...saveData.population,
+                                            maxWorkers:
+                                                saveData.population.maxWorkers +
+                                                1,
+                                            availableWorkers:
+                                                saveData.population.maxWorkers +
+                                                1,
+                                        },
+                                        buildings: {
+                                            ...saveData.buildings,
+                                            commonHouses: {
+                                                ...saveData.buildings
+                                                    .commonHouses,
+                                                owned:
+                                                    saveData.buildings
+                                                        .commonHouses.owned + 1,
+                                            },
                                         },
                                     },
-                                });
+                                    true
+                                );
                             }}
                         >
                             Common House

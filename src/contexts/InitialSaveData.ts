@@ -57,6 +57,14 @@ export const initialSaveData: SaveData = {
             owned: 0,
             rateGrowth: 1.07,
         },
+        lumbermill: {
+            owned: 0,
+            rateGrowth: 1.07,
+        },
+        stoneQuarry: {
+            owned: 0,
+            rateGrowth: 1.07,
+        },
     },
     population: {
         maxWorkers: 0,

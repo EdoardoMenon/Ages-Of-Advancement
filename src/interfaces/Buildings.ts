@@ -20,4 +20,6 @@ export interface Building {
 
 export interface Buildings {
     commonHouses: Building;
+    lumbermill: Building;
+    stoneQuarry: Building;
 }

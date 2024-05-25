@@ -143,7 +143,7 @@ const baseStyleTabs = defineTabsStyle(() => ({
     },
 }));
 
-const baseStyleTable = defineTableStyle(() => ({
+const darkStripedTable = defineTableStyle(() => ({
     table: {
         bg: 'light-background.500',
     },
@@ -153,6 +153,25 @@ const baseStyleTable = defineTableStyle(() => ({
                 bg: 'primary.500',
             },
             color: 'white',
+        },
+    },
+}));
+
+const smallStripedTable = defineTableStyle(() => ({
+    table: {
+        border: 'solid 2px',
+        borderColor: 'light-background.400',
+        bg: 'light-background.500',
+    },
+    tbody: {
+        tr: {
+            '&:nth-of-type(odd)': {
+                bg: 'primary.500',
+            },
+            color: 'white',
+            td: {
+                p: 2,
+            },
         },
     },
 }));
@@ -184,7 +203,8 @@ const theme = extendTheme({
         }),
         Table: defineTableConfig({
             variants: {
-                darkStriped: baseStyleTable,
+                darkStriped: darkStripedTable,
+                smallStriped: smallStripedTable,
             },
         }),
     },
