@@ -1,4 +1,4 @@
-import ResourceTable from '../resource-table/ResourceTable';
+import ResourceTable from './ResourceTable';
 
 function Resources() {
     return <ResourceTable />;

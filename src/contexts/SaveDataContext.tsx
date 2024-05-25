@@ -2,12 +2,19 @@ import { ReactNode, createContext, useState, useEffect } from 'react';
 import { SaveData } from '../interfaces/SaveData';
 import { initialSaveData } from './InitialSaveData';
 import { Resources } from '../interfaces/Resources';
+import { Buildings } from '../interfaces/Buildings';
+import { canAffordBuilding } from '../helper/Helper';
+import { AllBuildingData } from '../static/BuildingCosts';
 
 interface StateType {
     saveData: SaveData;
     setSaveData: React.Dispatch<React.SetStateAction<SaveData>>;
     gatherResource(name: keyof Resources, amount?: number): void;
     increaseRate(name: keyof Resources, amount: number): void;
+    purchaseBuildingIfPossible(
+        buildingName: keyof Buildings,
+        updates: Partial<SaveData>
+    ): void;
 }
 
 export const SaveDataContext = createContext<StateType>({} as StateType);
@@ -37,7 +44,7 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
         setSaveData((prevSaveData) => {
             const resource = prevSaveData.resources[name];
             const newAmount = Math.min(
-                resource.amount + amount,
+                resource.amount + amount * saveData.clickingPower,
                 resource.capacity
             );
 
@@ -52,6 +59,44 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 },
             };
         });
+    }
+
+    function purchaseBuildingIfPossible(
+        buildingName: keyof Buildings,
+        updates: Partial<SaveData>
+    ) {
+        const buildingCost = AllBuildingData.get(buildingName)?.costs;
+
+        if (
+            buildingCost &&
+            canAffordBuilding(
+                saveData.buildings[buildingName],
+                saveData.resources,
+                buildingCost
+            )
+        ) {
+            setSaveData((prevSaveData) => {
+                const updatedResources = { ...prevSaveData.resources };
+
+                for (const [resourceName, cost] of Object.entries(
+                    buildingCost
+                )) {
+                    const resourceKey = resourceName as keyof Resources;
+                    updatedResources[resourceKey] = {
+                        ...updatedResources[resourceKey],
+                        amount: updatedResources[resourceKey].amount - cost,
+                    };
+                }
+
+                const newSaveData = {
+                    ...prevSaveData,
+                    resources: updatedResources,
+                    ...updates,
+                };
+
+                return newSaveData;
+            });
+        }
     }
 
     useEffect(() => {
@@ -85,7 +130,13 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
 
     return (
         <SaveDataContext.Provider
-            value={{ saveData, setSaveData, gatherResource, increaseRate }}
+            value={{
+                saveData,
+                setSaveData,
+                gatherResource,
+                increaseRate,
+                purchaseBuildingIfPossible,
+            }}
         >
             {children}
         </SaveDataContext.Provider>

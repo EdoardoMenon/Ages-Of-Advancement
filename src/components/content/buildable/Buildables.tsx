@@ -2,9 +2,13 @@ import { Button, Flex } from '@chakra-ui/react';
 import { useContext } from 'react';
 import BuildableContainer from './BuildableContainer';
 import { SaveDataContext } from '../../../contexts/SaveDataContext';
+import HoverPopupExpandable from '../../hover-popup/HoverPopupExpandable';
+import BuildingPopup from './BuildingPopup';
 
 function Buildables() {
-    const { gatherResource } = useContext(SaveDataContext);
+    const { saveData, gatherResource, purchaseBuildingIfPossible } =
+        useContext(SaveDataContext);
+
     return (
         <Flex direction="column" gap={4}>
             <BuildableContainer headingName="Gathering">
@@ -31,7 +35,41 @@ function Buildables() {
             </BuildableContainer>
             <BuildableContainer headingName="Houses">
                 <Flex gap={4}>
-                    <Button variant="primary">Common House</Button>
+                    <HoverPopupExpandable
+                        content={
+                            <BuildingPopup
+                                description="A common house for residents to live in"
+                                buildingName="commonHouses"
+                            />
+                        }
+                    >
+                        <Button
+                            variant="primary"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                purchaseBuildingIfPossible('commonHouses', {
+                                    population: {
+                                        ...saveData.population,
+                                        maxWorkers:
+                                            saveData.population.maxWorkers + 1,
+                                        availableWorkers:
+                                            saveData.population.maxWorkers + 1,
+                                    },
+                                    buildings: {
+                                        ...saveData.buildings,
+                                        commonHouses: {
+                                            ...saveData.buildings.commonHouses,
+                                            owned:
+                                                saveData.buildings.commonHouses
+                                                    .owned + 1,
+                                        },
+                                    },
+                                });
+                            }}
+                        >
+                            Common House
+                        </Button>
+                    </HoverPopupExpandable>
                 </Flex>
             </BuildableContainer>
         </Flex>

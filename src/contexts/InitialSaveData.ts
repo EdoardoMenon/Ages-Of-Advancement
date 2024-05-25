@@ -6,7 +6,7 @@ export const initialSaveData: SaveData = {
             amount: 0,
             capacity: 500,
             rate: 0,
-            isHidden: false,
+            isHidden: true,
         },
         lumber: {
             amount: 0,
@@ -52,4 +52,15 @@ export const initialSaveData: SaveData = {
         },
     },
     stats: {},
+    buildings: {
+        commonHouses: {
+            owned: 0,
+            rateGrowth: 1.07,
+        },
+    },
+    population: {
+        maxWorkers: 0,
+        availableWorkers: 0,
+    },
+    clickingPower: 100,
 };
