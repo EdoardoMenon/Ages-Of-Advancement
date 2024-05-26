@@ -1,5 +1,7 @@
+import { initialSaveData } from '../contexts/InitialSaveData';
 import { Building, BuildingCosts } from '../interfaces/Buildings';
 import { Resources } from '../interfaces/Resources';
+import { SaveData } from '../interfaces/SaveData';
 
 export function capitaliseFirstLetter(str: string): string {
     if (!str) return str;
@@ -52,4 +54,24 @@ export function splitCamelCase(input: string) {
     const capitalizedResult = result.charAt(0).toUpperCase() + result.slice(1);
 
     return capitalizedResult;
+}
+
+export function serializeSaveData(data: SaveData): string {
+    try {
+        const jsonString = JSON.stringify(data);
+        return btoa(jsonString);
+    } catch (error) {
+        console.error('Error serializing save data:', error);
+        return '';
+    }
+}
+
+export function deserializeSaveData(serializedData: string): SaveData {
+    try {
+        const jsonString = atob(serializedData);
+        return JSON.parse(jsonString);
+    } catch (error) {
+        console.error('Error deserializing save data:', error);
+        return initialSaveData;
+    }
 }

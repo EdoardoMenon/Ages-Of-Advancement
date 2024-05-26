@@ -1,10 +1,13 @@
-import { Flex, HStack, Heading } from '@chakra-ui/react';
+import { Flex, HStack, Heading, useDisclosure } from '@chakra-ui/react';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HoverPopup from '../hover-popup/HoverPopup';
+import Settings from '../settings/Settings';
 
 function Navbar() {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     return (
         <Flex
             w="100%"
@@ -44,9 +47,14 @@ function Navbar() {
                     <BarChartIcon fontSize="medium" color="green" />
                 </HoverPopup>
                 <HoverPopup text="Settings" textColor="assorted.silver">
-                    <SettingsIcon fontSize="medium" color="silver" />
+                    <SettingsIcon
+                        fontSize="medium"
+                        color="silver"
+                        onClick={onOpen}
+                    />
                 </HoverPopup>
             </HStack>
+            <Settings isOpen={isOpen} onClose={onClose} />
         </Flex>
     );
 }

@@ -1,9 +1,13 @@
-import { ReactNode, createContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useState, useEffect, useRef } from 'react';
 import { SaveData } from '../interfaces/SaveData';
 import { initialSaveData } from './InitialSaveData';
 import { Resources } from '../interfaces/Resources';
 import { Buildings } from '../interfaces/Buildings';
-import { canAffordBuilding } from '../helper/Helper';
+import {
+    canAffordBuilding,
+    deserializeSaveData,
+    serializeSaveData,
+} from '../helper/Helper';
 import { AllBuildingData } from '../static/BuildingData';
 import { AllStaticRates } from '../static/StaticRates';
 
@@ -21,12 +25,46 @@ interface StateType {
         updates: Partial<SaveData>,
         decreaseFood?: boolean
     ): void;
+    manualSave(): void;
+    clearSave(): void;
 }
 
 export const SaveDataContext = createContext<StateType>({} as StateType);
 
 export function SaveDataProvider({ children }: { children: ReactNode }) {
-    const [saveData, setSaveData] = useState<SaveData>(initialSaveData);
+    const [saveData, setSaveData] = useState<SaveData>(() => {
+        const savedData = localStorage.getItem('aoa_savedata');
+        return savedData ? deserializeSaveData(savedData) : initialSaveData;
+    });
+
+    const saveDataRef = useRef(saveData);
+
+    useEffect(() => {
+        saveDataRef.current = saveData;
+    }, [saveData]);
+
+    useEffect(() => {
+        const saveInterval = setInterval(() => {
+            localStorage.setItem(
+                'aoa_savedata',
+                serializeSaveData(saveDataRef.current)
+            );
+        }, 60000);
+
+        return () => clearInterval(saveInterval);
+    }, []);
+
+    function manualSave() {
+        localStorage.setItem(
+            'aoa_savedata',
+            serializeSaveData(saveDataRef.current)
+        );
+    }
+
+    function clearSave() {
+        localStorage.removeItem('aoa_savedata');
+        setSaveData(initialSaveData);
+    }
 
     function increaseRates(
         rateChanges?: Partial<{ [key in keyof Resources]: number }>,
@@ -87,7 +125,7 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
         setSaveData((prevSaveData) => {
             const resource = prevSaveData.resources[name];
             const newAmount = Math.min(
-                resource.amount + amount * saveData.clickingPower,
+                resource.amount + amount * prevSaveData.clickingPower,
                 resource.capacity
             );
 
@@ -202,6 +240,8 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 gatherResource,
                 increaseRates,
                 purchaseBuildingIfPossible,
+                manualSave,
+                clearSave,
             }}
         >
             {children}
