@@ -1,4 +1,5 @@
 import { Buildings } from './Buildings';
+import { Resources } from './Resources';
 
 export interface ResearchInfo {
     isComplete: boolean;
@@ -15,5 +16,10 @@ export interface Research {
 export interface ResearchData {
     researchPrerequisites: (keyof Research)[];
     buildingPrerequisites: (keyof Buildings)[];
+    viewingPrerequisites: (
+        | keyof Research
+        | keyof Buildings
+        | keyof Resources
+    )[];
     cost: number;
 }

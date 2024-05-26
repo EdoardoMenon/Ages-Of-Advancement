@@ -51,31 +51,24 @@ function Buildables() {
                             description="A common house for residents to live in"
                             buildingName="commonHouse"
                             purchaseOnClick={() =>
-                                purchaseBuildingIfPossible(
-                                    'commonHouse',
-                                    {
-                                        population: {
-                                            ...saveData.population,
-                                            maxWorkers:
-                                                saveData.population.maxWorkers +
-                                                1,
-                                            availableWorkers:
-                                                saveData.population.maxWorkers +
-                                                1,
-                                        },
-                                        buildings: {
-                                            ...saveData.buildings,
-                                            commonHouse: {
-                                                ...saveData.buildings
-                                                    .commonHouse,
-                                                owned:
-                                                    saveData.buildings
-                                                        .commonHouse.owned + 1,
-                                            },
+                                purchaseBuildingIfPossible('commonHouse', {
+                                    population: {
+                                        ...saveData.population,
+                                        maxWorkers:
+                                            saveData.population.maxWorkers + 1,
+                                        availableWorkers:
+                                            saveData.population.maxWorkers + 1,
+                                    },
+                                    buildings: {
+                                        ...saveData.buildings,
+                                        commonHouse: {
+                                            ...saveData.buildings.commonHouse,
+                                            owned:
+                                                saveData.buildings.commonHouse
+                                                    .owned + 1,
                                         },
                                     },
-                                    true
-                                )
+                                })
                             }
                         />
                     </Flex>
@@ -144,7 +137,7 @@ function Buildables() {
                         <BuildableButton
                             description="A place for minds to come together and research to be done"
                             buildingName="school"
-                            purchaseOnClick={() =>
+                            purchaseOnClick={() => {
                                 purchaseBuildingIfPossible(
                                     'school',
                                     {
@@ -159,8 +152,8 @@ function Buildables() {
                                         },
                                     },
                                     true
-                                )
-                            }
+                                );
+                            }}
                         />
                     </Flex>
                 </BuildableContainer>

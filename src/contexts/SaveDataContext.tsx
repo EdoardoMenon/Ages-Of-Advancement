@@ -17,18 +17,12 @@ interface StateType {
     saveData: SaveData;
     setSaveData: React.Dispatch<React.SetStateAction<SaveData>>;
     gatherResource(name: keyof Resources, amount?: number): void;
-    increaseRates(
-        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        buildingName?: keyof Buildings
-    ): void;
-    decreaseRates(
-        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        buildingName?: keyof Buildings
-    ): void;
+    increaseRates(buildingName?: keyof Buildings): void;
+    decreaseRates(buildingName?: keyof Buildings): void;
     purchaseBuildingIfPossible(
         buildingName: keyof Buildings,
         updates: Partial<SaveData>,
-        decreaseFood?: boolean
+        increaseRates?: boolean
     ): void;
     manualSave(): void;
     clearSave(): void;
@@ -71,11 +65,8 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
         setSaveData(initialSaveData);
     }
 
-    function increaseRates(
-        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        buildingName?: keyof Buildings
-    ) {
-        if (!rateChanges) return;
+    function increaseRates(buildingName?: keyof Buildings) {
+        if (!buildingName) return;
 
         setSaveData((prevSaveData) => {
             const newResources = { ...prevSaveData.resources };
@@ -100,7 +91,9 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 }
             }
 
-            Object.entries(rateChanges).forEach(([name, amount]) => {
+            Object.entries(
+                AllBuildingData.get(buildingName)?.resourcesGained ?? {}
+            ).forEach(([name, amount]) => {
                 if (amount !== undefined) {
                     const resource = newResources[name as keyof Resources];
                     const newRate = resource.rate + amount;
@@ -120,11 +113,8 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
         });
     }
 
-    function decreaseRates(
-        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        buildingName?: keyof Buildings
-    ) {
-        if (!rateChanges) return;
+    function decreaseRates(buildingName?: keyof Buildings) {
+        if (!buildingName) return;
 
         setSaveData((prevSaveData) => {
             const newResources = { ...prevSaveData.resources };
@@ -149,7 +139,9 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 }
             }
 
-            Object.entries(rateChanges).forEach(([name, amount]) => {
+            Object.entries(
+                AllBuildingData.get(buildingName)?.resourcesGained ?? {}
+            ).forEach(([name, amount]) => {
                 if (amount !== undefined) {
                     const resource = newResources[name as keyof Resources];
                     const newRate = resource.rate - amount;
@@ -222,7 +214,7 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
     function purchaseBuildingIfPossible(
         buildingName: keyof Buildings,
         updates: Partial<SaveData>,
-        decreaseFood?: boolean
+        increaseRates?: boolean
     ) {
         const buildingCost = AllBuildingData.get(buildingName)?.costs;
 
@@ -247,9 +239,25 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                     };
                 }
 
-                if (decreaseFood) {
+                if (buildingName === 'commonHouse') {
                     updatedResources.food.rate +=
                         AllStaticRates.humanFoodDeduction;
+                }
+
+                if (increaseRates) {
+                    Object.entries(
+                        AllBuildingData.get(buildingName)?.resourcesGained ?? {}
+                    ).forEach(([name, amount]) => {
+                        if (amount !== undefined) {
+                            const resource =
+                                updatedResources[name as keyof Resources];
+                            const newRate = resource.rate + amount;
+                            updatedResources[name as keyof Resources] = {
+                                ...resource,
+                                rate: newRate,
+                            };
+                        }
+                    });
                 }
 
                 const newSaveData = {

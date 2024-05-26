@@ -7,7 +7,7 @@ export function checkResourceConditions(
 ): Resources {
     //Research
     if (!buildings.school.isHidden) {
-        resources.research.isHidden = true;
+        resources.research.isHidden = false;
     }
 
     return resources;

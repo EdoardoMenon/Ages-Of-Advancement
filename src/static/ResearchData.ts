@@ -5,7 +5,8 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
         'copperMine',
         {
             researchPrerequisites: [],
-            buildingPrerequisites: ['lumbermill', 'stoneQuarry'],
+            buildingPrerequisites: [],
+            viewingPrerequisites: ['lumbermill', 'stoneQuarry', 'farm'],
             cost: 100,
         },
     ],
@@ -13,7 +14,8 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
         'tinMine',
         {
             researchPrerequisites: [],
-            buildingPrerequisites: ['copperMine'],
+            buildingPrerequisites: [],
+            viewingPrerequisites: ['copperMine'],
             cost: 100,
         },
     ],
@@ -21,7 +23,8 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
         'smelting',
         {
             researchPrerequisites: [],
-            buildingPrerequisites: ['tinMine'],
+            buildingPrerequisites: [],
+            viewingPrerequisites: ['tinMine'],
             cost: 100,
         },
     ],
@@ -30,14 +33,16 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
         {
             researchPrerequisites: [],
             buildingPrerequisites: [],
+            viewingPrerequisites: ['lumbermill', 'stoneQuarry', 'farm'],
             cost: 100,
         },
     ],
     [
         'clickingPower2',
         {
-            researchPrerequisites: ['clickingPower'],
+            researchPrerequisites: [],
             buildingPrerequisites: [],
+            viewingPrerequisites: ['clickingPower'],
             cost: 500,
         },
     ],

@@ -24,7 +24,7 @@ function ResourceTable() {
                                         {Math.round(value.amount)}/
                                         {value.capacity}
                                     </Td>
-                                    <Td>{value.rate}/s</Td>
+                                    <Td w="150px">{value.rate}/s</Td>
                                 </Tr>
                             );
                     }

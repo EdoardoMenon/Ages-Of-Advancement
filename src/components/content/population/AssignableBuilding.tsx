@@ -52,13 +52,7 @@ function AssignableBuilding({ buildingName }: Props) {
                         variant="primary"
                         borderTopRightRadius="0"
                         borderBottomRightRadius="0"
-                        onClick={() =>
-                            decreaseRates(
-                                AllBuildingData.get(buildingName)
-                                    ?.resourcesGained,
-                                buildingName
-                            )
-                        }
+                        onClick={() => decreaseRates(buildingName)}
                     >
                         -
                     </Button>
@@ -80,13 +74,7 @@ function AssignableBuilding({ buildingName }: Props) {
                         variant="primary"
                         borderTopLeftRadius="0"
                         borderBottomLeftRadius="0"
-                        onClick={() =>
-                            increaseRates(
-                                AllBuildingData.get(buildingName)
-                                    ?.resourcesGained,
-                                buildingName
-                            )
-                        }
+                        onClick={() => increaseRates(buildingName)}
                     >
                         +
                     </Button>

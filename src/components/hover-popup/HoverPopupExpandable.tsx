@@ -7,47 +7,38 @@ import {
     Flex,
     PlacementWithLogical,
     ResponsiveValue,
+    useDisclosure,
 } from '@chakra-ui/react';
-import { useState, useRef, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Property } from 'csstype';
+
+interface Props {
+    children: ReactNode;
+    placement?: PlacementWithLogical;
+    offset?: [number, number];
+    textColor?: ResponsiveValue<Property.Color>;
+    content: ReactNode;
+}
 
 function HoverPopupExpandable({
     children,
     placement = 'bottom',
     offset = [0, 10],
     content,
-}: {
-    children: ReactNode;
-    placement?: PlacementWithLogical;
-    offset?: [number, number];
-    textColor?: ResponsiveValue<Property.Color>;
-    content: ReactNode;
-}) {
-    const [isOpen, setIsOpen] = useState(false);
-    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const open = () => {
-        setIsOpen(true);
-        if (timeoutRef.current !== null) {
-            clearTimeout(timeoutRef.current);
-        }
-    };
-
-    const close = () => {
-        timeoutRef.current = setTimeout(() => setIsOpen(false), 25);
-    };
+}: Props) {
+    const { isOpen, onClose, onOpen } = useDisclosure();
 
     return (
         <Flex justifyContent="center" alignItems="center">
             <Popover
                 isOpen={isOpen}
-                onClose={close}
+                onClose={onClose}
                 placement={placement}
                 closeOnBlur={false}
                 offset={offset}
             >
                 <PopoverTrigger>
-                    <div onMouseEnter={open} onMouseLeave={close}>
+                    <div onMouseEnter={onOpen} onMouseLeave={onClose}>
                         {children}
                     </div>
                 </PopoverTrigger>

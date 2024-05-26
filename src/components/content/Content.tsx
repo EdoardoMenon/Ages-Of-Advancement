@@ -38,7 +38,7 @@ function Content() {
                     <Buildables />
                 </TabPanel>
                 {showResearch && (
-                    <TabPanel>
+                    <TabPanel p={0}>
                         <Research />
                     </TabPanel>
                 )}
