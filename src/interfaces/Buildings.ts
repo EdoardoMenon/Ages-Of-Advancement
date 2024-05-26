@@ -11,15 +11,20 @@ export interface BuildingBenefits {
 export interface BuildingData {
     costs: Partial<BuildingCosts>;
     benefits: BuildingBenefits;
+    resourcesGained?: {
+        [key in keyof Resources]?: number;
+    };
 }
 
 export interface Building {
     owned: number;
     rateGrowth: number;
+    assigned: number;
 }
 
 export interface Buildings {
-    commonHouses: Building;
+    commonHouse: Building;
     lumbermill: Building;
     stoneQuarry: Building;
+    farm: Building;
 }

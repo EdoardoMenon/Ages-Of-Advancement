@@ -8,7 +8,7 @@ import {
 import { useContext } from 'react';
 import { SaveDataContext } from '../../../contexts/SaveDataContext';
 import { Resources } from '../../../interfaces/Resources';
-import { AllBuildingData } from '../../../static/BuildingCosts';
+import { AllBuildingData } from '../../../static/BuildingData';
 
 interface Props {
     description: string;

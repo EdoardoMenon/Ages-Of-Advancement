@@ -12,5 +12,4 @@ export type BuildingRate = {
 
 export interface StaticRates {
     humanFoodDeduction: number;
-    buildings: BuildingRate;
 }

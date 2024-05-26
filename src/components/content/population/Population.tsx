@@ -6,6 +6,7 @@ function Population() {
         <Flex gap={4}>
             <AssignableBuilding buildingName="lumbermill" />
             <AssignableBuilding buildingName="stoneQuarry" />
+            <AssignableBuilding buildingName="farm" />
         </Flex>
     );
 }

@@ -45,3 +45,11 @@ export function calculateScalingBuildingCost(
 ): number {
     return Math.round(cost * rateGrowth ** owned);
 }
+
+export function splitCamelCase(input: string) {
+    const result = input.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+    const capitalizedResult = result.charAt(0).toUpperCase() + result.slice(1);
+
+    return capitalizedResult;
+}

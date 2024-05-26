@@ -4,14 +4,18 @@ import { initialSaveData } from './InitialSaveData';
 import { Resources } from '../interfaces/Resources';
 import { Buildings } from '../interfaces/Buildings';
 import { canAffordBuilding } from '../helper/Helper';
-import { AllBuildingData } from '../static/BuildingCosts';
+import { AllBuildingData } from '../static/BuildingData';
 import { AllStaticRates } from '../static/StaticRates';
 
 interface StateType {
     saveData: SaveData;
     setSaveData: React.Dispatch<React.SetStateAction<SaveData>>;
     gatherResource(name: keyof Resources, amount?: number): void;
-    increaseRate(name: keyof Resources, amount: number): void;
+    increaseRates(
+        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
+        decreaseWorkers?: boolean,
+        buildingName?: keyof Buildings
+    ): void;
     purchaseBuildingIfPossible(
         buildingName: keyof Buildings,
         updates: Partial<SaveData>,
@@ -24,20 +28,57 @@ export const SaveDataContext = createContext<StateType>({} as StateType);
 export function SaveDataProvider({ children }: { children: ReactNode }) {
     const [saveData, setSaveData] = useState<SaveData>(initialSaveData);
 
-    function increaseRate(name: keyof Resources, amount: number) {
+    function increaseRates(
+        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
+        decreaseWorkers?: boolean,
+        buildingName?: keyof Buildings
+    ) {
+        if (!rateChanges) return;
+
         setSaveData((prevSaveData) => {
-            const resource = prevSaveData.resources[name];
-            const newAmount = resource.rate + amount;
+            const newResources = { ...prevSaveData.resources };
+            let newPopulation = { ...prevSaveData.population };
+
+            if (
+                decreaseWorkers &&
+                prevSaveData.population.availableWorkers < 1
+            ) {
+                return prevSaveData;
+            }
+
+            Object.entries(rateChanges).forEach(([name, amount]) => {
+                if (amount !== undefined) {
+                    const resource = newResources[name as keyof Resources];
+                    const newRate = resource.rate + amount;
+                    newResources[name as keyof Resources] = {
+                        ...resource,
+                        rate: newRate,
+                    };
+                }
+            });
+
+            if (decreaseWorkers) {
+                newPopulation = {
+                    ...prevSaveData.population,
+                    availableWorkers:
+                        prevSaveData.population.availableWorkers - 1,
+                };
+            }
+
+            const newBuildings = { ...prevSaveData.buildings };
+            if (buildingName) {
+                const prevAssigned = newBuildings[buildingName].assigned;
+                newBuildings[buildingName] = {
+                    ...newBuildings[buildingName],
+                    assigned: prevAssigned + 1,
+                };
+            }
 
             return {
                 ...prevSaveData,
-                resources: {
-                    ...prevSaveData.resources,
-                    [name]: {
-                        ...resource,
-                        rate: newAmount,
-                    },
-                },
+                resources: newResources,
+                population: newPopulation,
+                buildings: newBuildings,
             };
         });
     }
@@ -114,19 +155,32 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
 
                 Object.keys(newResources).forEach((key) => {
                     const resource = newResources[key as keyof Resources];
-                    if (resource.rate !== 0) {
-                        const newAmount =
-                            resource.rate > 0
-                                ? Math.min(
-                                      resource.amount + resource.rate,
-                                      resource.capacity
-                                  )
-                                : Math.max(resource.amount + resource.rate, 0);
 
-                        newResources[key as keyof Resources] = {
-                            ...resource,
-                            amount: newAmount,
-                        };
+                    if (resource.rate !== 0) {
+                        const requiredResources =
+                            resource.requiresResource || [];
+                        const canIncrease = requiredResources.every(
+                            (reqResource) =>
+                                newResources[reqResource].amount > 0
+                        );
+
+                        if (canIncrease) {
+                            const newAmount =
+                                resource.rate > 0
+                                    ? Math.min(
+                                          resource.amount + resource.rate,
+                                          resource.capacity
+                                      )
+                                    : Math.max(
+                                          resource.amount + resource.rate,
+                                          0
+                                      );
+
+                            newResources[key as keyof Resources] = {
+                                ...resource,
+                                amount: newAmount,
+                            };
+                        }
                     }
                 });
 
@@ -146,7 +200,7 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 saveData,
                 setSaveData,
                 gatherResource,
-                increaseRate,
+                increaseRates,
                 purchaseBuildingIfPossible,
             }}
         >

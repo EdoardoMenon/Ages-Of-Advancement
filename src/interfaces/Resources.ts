@@ -14,4 +14,5 @@ export interface Resource {
     capacity: number;
     rate: number;
     isHidden: boolean;
+    requiresResource?: (keyof Resources)[];
 }

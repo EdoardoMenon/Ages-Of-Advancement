@@ -13,6 +13,7 @@ export const initialSaveData: SaveData = {
             capacity: 500,
             rate: 0,
             isHidden: false,
+            requiresResource: ['food'],
         },
         food: {
             amount: 0,
@@ -25,6 +26,7 @@ export const initialSaveData: SaveData = {
             capacity: 500,
             rate: 0,
             isHidden: false,
+            requiresResource: ['food'],
         },
         gold: {
             amount: 0,
@@ -53,17 +55,25 @@ export const initialSaveData: SaveData = {
     },
     stats: {},
     buildings: {
-        commonHouses: {
+        commonHouse: {
             owned: 0,
             rateGrowth: 1.07,
+            assigned: 0,
         },
         lumbermill: {
             owned: 0,
             rateGrowth: 1.07,
+            assigned: 0,
         },
         stoneQuarry: {
             owned: 0,
             rateGrowth: 1.07,
+            assigned: 0,
+        },
+        farm: {
+            owned: 0,
+            rateGrowth: 1.07,
+            assigned: 0,
         },
     },
     population: {
