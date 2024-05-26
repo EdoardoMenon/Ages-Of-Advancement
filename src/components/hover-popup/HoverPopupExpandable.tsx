@@ -34,7 +34,7 @@ function HoverPopupExpandable({
     };
 
     const close = () => {
-        timeoutRef.current = setTimeout(() => setIsOpen(false), 100);
+        timeoutRef.current = setTimeout(() => setIsOpen(false), 25);
     };
 
     return (
@@ -52,8 +52,6 @@ function HoverPopupExpandable({
                     </div>
                 </PopoverTrigger>
                 <PopoverContent
-                    onMouseEnter={open}
-                    onMouseLeave={close}
                     backgroundColor="light-background.500"
                     width="auto"
                     minWidth="fit-content"

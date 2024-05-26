@@ -62,8 +62,8 @@ function BuildingPopup({ description, buildingName }: Props) {
                 })}
             </Flex>
             <Flex direction="column" alignContent="flex-start" w="100%">
-                <Text mb={2}>Benefits:</Text>
-                {Object.entries(buildingData.benefits).map(([key, value]) => (
+                <Text mb={2}>Effects:</Text>
+                {Object.entries(buildingData.effects).map(([key, value]) => (
                     <Text key={key} textAlign="left">
                         {capitaliseFirstLetter(key)}: {value}
                     </Text>

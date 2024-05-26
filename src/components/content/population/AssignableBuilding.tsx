@@ -1,6 +1,6 @@
 import { Button, Flex, Table, Tbody, Td, Text, Tr } from '@chakra-ui/react';
 import BuildableContainer from '../buildable/BuildableContainer';
-import { Buildings } from '../../../interfaces/Buildings';
+import { ActiveBuilding, Buildings } from '../../../interfaces/Buildings';
 import { capitaliseFirstLetter, splitCamelCase } from '../../../helper/Helper';
 import { useContext } from 'react';
 import { SaveDataContext } from '../../../contexts/SaveDataContext';
@@ -11,9 +11,11 @@ interface Props {
 }
 
 function AssignableBuilding({ buildingName }: Props) {
-    const { saveData, increaseRates } = useContext(SaveDataContext);
-    const building = saveData.buildings[buildingName];
+    const { saveData, increaseRates, decreaseRates } =
+        useContext(SaveDataContext);
+    const building = saveData.buildings[buildingName] as ActiveBuilding;
 
+    if (building.assigned === undefined) return;
     if (building.owned > 0)
         return (
             <BuildableContainer
@@ -50,6 +52,13 @@ function AssignableBuilding({ buildingName }: Props) {
                         variant="primary"
                         borderTopRightRadius="0"
                         borderBottomRightRadius="0"
+                        onClick={() =>
+                            decreaseRates(
+                                AllBuildingData.get(buildingName)
+                                    ?.resourcesGained,
+                                buildingName
+                            )
+                        }
                     >
                         -
                     </Button>
@@ -71,14 +80,13 @@ function AssignableBuilding({ buildingName }: Props) {
                         variant="primary"
                         borderTopLeftRadius="0"
                         borderBottomLeftRadius="0"
-                        onClick={() => {
+                        onClick={() =>
                             increaseRates(
                                 AllBuildingData.get(buildingName)
                                     ?.resourcesGained,
-                                true,
                                 buildingName
-                            );
-                        }}
+                            )
+                        }
                     >
                         +
                     </Button>

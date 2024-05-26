@@ -1,16 +1,18 @@
 import { Resources } from './Resources';
 
+export type Category = 'gathering' | 'houses' | 'production' | 'research';
+
 export type BuildingCosts = {
     [key in keyof Resources]: number;
 };
 
-export interface BuildingBenefits {
+export interface BuildingEffects {
     [key: string]: number | string;
 }
 
 export interface BuildingData {
     costs: Partial<BuildingCosts>;
-    benefits: BuildingBenefits;
+    effects: BuildingEffects;
     resourcesGained?: {
         [key in keyof Resources]?: number;
     };
@@ -19,12 +21,22 @@ export interface BuildingData {
 export interface Building {
     owned: number;
     rateGrowth: number;
+    isHidden: boolean;
+    category: Category;
+}
+
+export interface PassiveBuilding extends Building {}
+
+export interface ActiveBuilding extends Building {
     assigned: number;
 }
 
 export interface Buildings {
-    commonHouse: Building;
-    lumbermill: Building;
-    stoneQuarry: Building;
-    farm: Building;
+    commonHouse: ActiveBuilding;
+    lumbermill: ActiveBuilding;
+    stoneQuarry: ActiveBuilding;
+    farm: ActiveBuilding;
+    copperMine: ActiveBuilding;
+    tinMine: ActiveBuilding;
+    school: PassiveBuilding;
 }

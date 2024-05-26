@@ -2,7 +2,7 @@ import { ReactNode, createContext, useState, useEffect, useRef } from 'react';
 import { SaveData } from '../interfaces/SaveData';
 import { initialSaveData } from './InitialSaveData';
 import { Resources } from '../interfaces/Resources';
-import { Buildings } from '../interfaces/Buildings';
+import { ActiveBuilding, Buildings } from '../interfaces/Buildings';
 import {
     canAffordBuilding,
     deserializeSaveData,
@@ -10,6 +10,8 @@ import {
 } from '../helper/Helper';
 import { AllBuildingData } from '../static/BuildingData';
 import { AllStaticRates } from '../static/StaticRates';
+import { checkBuildingConditions } from '../static/BuildingConditions';
+import { checkResourceConditions } from '../static/ResourceConditions';
 
 interface StateType {
     saveData: SaveData;
@@ -17,7 +19,10 @@ interface StateType {
     gatherResource(name: keyof Resources, amount?: number): void;
     increaseRates(
         rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        decreaseWorkers?: boolean,
+        buildingName?: keyof Buildings
+    ): void;
+    decreaseRates(
+        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
         buildingName?: keyof Buildings
     ): void;
     purchaseBuildingIfPossible(
@@ -68,7 +73,6 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
 
     function increaseRates(
         rateChanges?: Partial<{ [key in keyof Resources]: number }>,
-        decreaseWorkers?: boolean,
         buildingName?: keyof Buildings
     ) {
         if (!rateChanges) return;
@@ -77,11 +81,23 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
             const newResources = { ...prevSaveData.resources };
             let newPopulation = { ...prevSaveData.population };
 
-            if (
-                decreaseWorkers &&
-                prevSaveData.population.availableWorkers < 1
-            ) {
-                return prevSaveData;
+            const newBuildings = { ...prevSaveData.buildings };
+            if (buildingName) {
+                const building = newBuildings[buildingName] as ActiveBuilding;
+                if (building.assigned !== undefined) {
+                    if (prevSaveData.population.availableWorkers < 1) {
+                        return prevSaveData;
+                    }
+                    newPopulation = {
+                        ...prevSaveData.population,
+                        availableWorkers:
+                            prevSaveData.population.availableWorkers - 1,
+                    };
+                    newBuildings[buildingName] = {
+                        ...newBuildings[buildingName],
+                        assigned: building.assigned + 1,
+                    };
+                }
             }
 
             Object.entries(rateChanges).forEach(([name, amount]) => {
@@ -95,22 +111,54 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 }
             });
 
-            if (decreaseWorkers) {
-                newPopulation = {
-                    ...prevSaveData.population,
-                    availableWorkers:
-                        prevSaveData.population.availableWorkers - 1,
-                };
-            }
+            return {
+                ...prevSaveData,
+                resources: newResources,
+                population: newPopulation,
+                buildings: newBuildings,
+            };
+        });
+    }
+
+    function decreaseRates(
+        rateChanges?: Partial<{ [key in keyof Resources]: number }>,
+        buildingName?: keyof Buildings
+    ) {
+        if (!rateChanges) return;
+
+        setSaveData((prevSaveData) => {
+            const newResources = { ...prevSaveData.resources };
+            let newPopulation = { ...prevSaveData.population };
 
             const newBuildings = { ...prevSaveData.buildings };
             if (buildingName) {
-                const prevAssigned = newBuildings[buildingName].assigned;
-                newBuildings[buildingName] = {
-                    ...newBuildings[buildingName],
-                    assigned: prevAssigned + 1,
-                };
+                const building = newBuildings[buildingName] as ActiveBuilding;
+                if (building.assigned !== undefined) {
+                    if (building.assigned < 1) {
+                        return prevSaveData;
+                    }
+                    newPopulation = {
+                        ...prevSaveData.population,
+                        availableWorkers:
+                            prevSaveData.population.availableWorkers + 1,
+                    };
+                    newBuildings[buildingName] = {
+                        ...newBuildings[buildingName],
+                        assigned: building.assigned - 1,
+                    };
+                }
             }
+
+            Object.entries(rateChanges).forEach(([name, amount]) => {
+                if (amount !== undefined) {
+                    const resource = newResources[name as keyof Resources];
+                    const newRate = resource.rate - amount;
+                    newResources[name as keyof Resources] = {
+                        ...resource,
+                        rate: newRate,
+                    };
+                }
+            });
 
             return {
                 ...prevSaveData,
@@ -138,6 +186,35 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                         amount: newAmount,
                     },
                 },
+            };
+        });
+    }
+
+    useEffect(() => {
+        checkVisibilityConditions();
+    }, [
+        JSON.stringify(saveData.buildings),
+        JSON.stringify(saveData.resources),
+    ]);
+
+    function checkVisibilityConditions() {
+        setSaveData((prevSaveData) => {
+            const buildings = { ...prevSaveData.buildings };
+            const resources = { ...prevSaveData.resources };
+
+            const updatedBuildings = checkBuildingConditions(
+                buildings,
+                resources
+            );
+            const updatedResources = checkResourceConditions(
+                resources,
+                buildings
+            );
+
+            return {
+                ...prevSaveData,
+                resources: updatedResources,
+                buildings: updatedBuildings,
             };
         });
     }
@@ -239,6 +316,7 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
                 setSaveData,
                 gatherResource,
                 increaseRates,
+                decreaseRates,
                 purchaseBuildingIfPossible,
                 manualSave,
                 clearSave,
