@@ -1,60 +1,63 @@
-import {
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    PopoverArrow,
-    PopoverBody,
-    Flex,
-    PlacementWithLogical,
-    ResponsiveValue,
-    useDisclosure,
-    Box,
-} from '@chakra-ui/react';
-import { ReactNode } from 'react';
-import { Property } from 'csstype';
+import { ReactNode, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { ArrowContainer, Popover } from 'react-tiny-popover';
 
 interface Props {
     children: ReactNode;
-    placement?: PlacementWithLogical;
-    offset?: [number, number];
-    textColor?: ResponsiveValue<Property.Color>;
+    placement?: 'top' | 'bottom' | 'left' | 'right';
+    textColor?: string;
     content: ReactNode;
 }
 
 function HoverPopupExpandable({
     children,
     placement = 'bottom',
-    offset = [0, 10],
     content,
 }: Props) {
-    const { isOpen, onClose, onOpen } = useDisclosure();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleMouseEnter = () => {
+        setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsOpen(false);
+    };
 
     return (
         <Flex justifyContent="center" alignItems="center">
             <Popover
                 isOpen={isOpen}
-                onClose={onClose}
-                onOpen={onOpen}
-                openDelay={0}
-                closeDelay={1}
-                placement={placement}
-                closeOnBlur={false}
-                offset={offset}
-                key={Math.random()}
+                positions={[placement]}
+                content={({ position, childRect, popoverRect }) => (
+                    <ArrowContainer
+                        position={position}
+                        childRect={childRect}
+                        popoverRect={popoverRect}
+                        arrowColor="white"
+                        arrowSize={8}
+                        arrowStyle={{ opacity: 0.7 }}
+                    >
+                        <Box
+                            backgroundColor="light-background.500"
+                            border="solid white 2px"
+                            width="auto"
+                            minWidth="fit-content"
+                            padding="1rem"
+                            boxShadow="md"
+                            borderRadius="md"
+                        >
+                            {content}
+                        </Box>
+                    </ArrowContainer>
+                )}
             >
-                <PopoverTrigger>
-                    <Box onMouseEnter={onOpen} onMouseOut={onClose}>
-                        {children}
-                    </Box>
-                </PopoverTrigger>
-                <PopoverContent
-                    backgroundColor="light-background.500"
-                    width="auto"
-                    minWidth="fit-content"
+                <Box
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                 >
-                    <PopoverArrow />
-                    <PopoverBody onMouseOver={onClose}>{content}</PopoverBody>
-                </PopoverContent>
+                    {children}
+                </Box>
             </Popover>
         </Flex>
     );
