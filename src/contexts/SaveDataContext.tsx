@@ -73,22 +73,25 @@ export function SaveDataProvider({ children }: { children: ReactNode }) {
             let newPopulation = { ...prevSaveData.population };
 
             const newBuildings = { ...prevSaveData.buildings };
-            if (buildingName) {
-                const building = newBuildings[buildingName] as ActiveBuilding;
-                if (building.assigned !== undefined) {
-                    if (prevSaveData.population.availableWorkers < 1) {
-                        return prevSaveData;
-                    }
-                    newPopulation = {
-                        ...prevSaveData.population,
-                        availableWorkers:
-                            prevSaveData.population.availableWorkers - 1,
-                    };
-                    newBuildings[buildingName] = {
-                        ...newBuildings[buildingName],
-                        assigned: building.assigned + 1,
-                    };
+            const building = newBuildings[buildingName] as ActiveBuilding;
+
+            if (building.assigned !== undefined) {
+                if (
+                    prevSaveData.population.availableWorkers < 1 ||
+                    building.assigned >= building.owned
+                ) {
+                    return prevSaveData;
                 }
+
+                newPopulation = {
+                    ...prevSaveData.population,
+                    availableWorkers:
+                        prevSaveData.population.availableWorkers - 1,
+                };
+                newBuildings[buildingName] = {
+                    ...newBuildings[buildingName],
+                    assigned: building.assigned + 1,
+                };
             }
 
             Object.entries(

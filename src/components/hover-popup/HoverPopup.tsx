@@ -1,17 +1,7 @@
-import {
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    PopoverArrow,
-    PopoverBody,
-    Flex,
-    PlacementWithLogical,
-    Text,
-    ResponsiveValue,
-    useDisclosure,
-} from '@chakra-ui/react';
+import { PlacementWithLogical, Text, ResponsiveValue } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Property } from 'csstype';
+import HoverPopupExpandable from './HoverPopupExpandable';
 
 interface Props {
     children: ReactNode;
@@ -28,34 +18,15 @@ function HoverPopup({
     offset = [0, 10],
     textColor,
 }: Props) {
-    const { isOpen, onClose, onOpen } = useDisclosure();
-
     return (
-        <Flex justifyContent="center" alignItems="center">
-            <Popover
-                isOpen={isOpen}
-                onClose={onClose}
-                placement={placement}
-                closeOnBlur={false}
-                offset={offset}
-            >
-                <PopoverTrigger>
-                    <div onMouseEnter={onOpen} onMouseLeave={onClose}>
-                        {children}
-                    </div>
-                </PopoverTrigger>
-                <PopoverContent
-                    backgroundColor="light-background.500"
-                    width="auto"
-                    minWidth="fit-content"
-                >
-                    <PopoverArrow />
-                    <PopoverBody>
-                        <Text color={textColor}>{text}</Text>
-                    </PopoverBody>
-                </PopoverContent>
-            </Popover>
-        </Flex>
+        <HoverPopupExpandable
+            placement={placement}
+            content={<Text color={textColor}>{text}</Text>}
+            offset={offset}
+            textColor={textColor}
+        >
+            {children}
+        </HoverPopupExpandable>
     );
 }
 

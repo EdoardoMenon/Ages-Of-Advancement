@@ -75,3 +75,29 @@ export function deserializeSaveData(serializedData: string): SaveData {
         return initialSaveData;
     }
 }
+
+export function formatBigInt(value: bigint): string {
+    if (value < 1_000n) return value.toString();
+    const suffixes = [
+        'K',
+        'M',
+        'B',
+        'T',
+        'Qa',
+        'Qi',
+        'Sx',
+        'Sp',
+        'Oc',
+        'No',
+        'Dc',
+    ];
+    let suffixIndex = -1;
+    let formattedValue = value;
+
+    while (formattedValue >= 1_000n && suffixIndex < suffixes.length - 1) {
+        formattedValue /= 1_000n;
+        suffixIndex += 1;
+    }
+
+    return `${formattedValue} ${suffixes[suffixIndex]}`;
+}

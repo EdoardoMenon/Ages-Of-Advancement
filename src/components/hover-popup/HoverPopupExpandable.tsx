@@ -8,6 +8,7 @@ import {
     PlacementWithLogical,
     ResponsiveValue,
     useDisclosure,
+    Box,
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 import { Property } from 'csstype';
@@ -33,14 +34,18 @@ function HoverPopupExpandable({
             <Popover
                 isOpen={isOpen}
                 onClose={onClose}
+                onOpen={onOpen}
+                openDelay={0}
+                closeDelay={1}
                 placement={placement}
                 closeOnBlur={false}
                 offset={offset}
+                key={Math.random()}
             >
                 <PopoverTrigger>
-                    <div onMouseEnter={onOpen} onMouseLeave={onClose}>
+                    <Box onMouseEnter={onOpen} onMouseOut={onClose}>
                         {children}
-                    </div>
+                    </Box>
                 </PopoverTrigger>
                 <PopoverContent
                     backgroundColor="light-background.500"
@@ -48,7 +53,7 @@ function HoverPopupExpandable({
                     minWidth="fit-content"
                 >
                     <PopoverArrow />
-                    <PopoverBody>{content}</PopoverBody>
+                    <PopoverBody onMouseOver={onClose}>{content}</PopoverBody>
                 </PopoverContent>
             </Popover>
         </Flex>
