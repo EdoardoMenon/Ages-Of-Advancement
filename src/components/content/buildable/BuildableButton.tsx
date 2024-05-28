@@ -31,16 +31,14 @@ function BuildableButton({ buildingName }: Props) {
         variant="primary"
         onClick={(e) => {
           e.stopPropagation();
-
-          const typedBuildingName = buildingName as keyof Buildings;
-          const buildingData = AllBuildingData.get(typedBuildingName);
+          const buildingData = AllBuildingData.get(buildingName);
 
           let updates = {
             buildings: {
               ...saveData.buildings,
-              [typedBuildingName]: {
-                ...saveData.buildings[typedBuildingName],
-                owned: saveData.buildings[typedBuildingName].owned + 1,
+              [buildingName]: {
+                ...saveData.buildings[buildingName],
+                owned: saveData.buildings[buildingName].owned + 1,
               },
             },
           };
@@ -52,11 +50,7 @@ function BuildableButton({ buildingName }: Props) {
           }
           const activeBuilding = building as ActiveBuilding;
           const isPassiveBuilding = activeBuilding.assigned === undefined;
-          purchaseBuildingIfPossible(
-            typedBuildingName,
-            updates,
-            isPassiveBuilding
-          );
+          purchaseBuildingIfPossible(buildingName, updates, isPassiveBuilding);
         }}
       >
         {splitCamelCase(buildingName)}

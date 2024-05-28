@@ -6,8 +6,7 @@ import BuildableButton from './BuildableButton';
 import { Buildings } from '../../../interfaces/Buildings';
 
 function Buildables() {
-  const { saveData, gatherResource, purchaseBuildingIfPossible } =
-    useContext(SaveDataContext);
+  const { saveData, gatherResource } = useContext(SaveDataContext);
 
   const showHousesCategory = Object.values(saveData.buildings).some(
     (building) => building.category === 'houses' && !building.isHidden
