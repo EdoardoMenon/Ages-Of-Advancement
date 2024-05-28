@@ -13,6 +13,7 @@ interface Props {
 function ResearchPopup({ description, researchName }: Props) {
   const { saveData } = useContext(SaveDataContext);
   const researchData = AllResearchData.get(researchName);
+  //TODO: Map over all prerequisites and show which ones are required to purchase the research
 
   return (
     <Flex direction="column" maxW="200px" gap={4} alignItems="flex-start" p={2}>
