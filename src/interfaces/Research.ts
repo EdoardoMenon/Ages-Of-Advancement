@@ -14,12 +14,13 @@ export interface Research {
 }
 
 export interface ResearchData {
-    researchPrerequisites: (keyof Research)[];
-    buildingPrerequisites: (keyof Buildings)[];
+    researchPrerequisites?: (keyof Research)[];
+    buildingPrerequisites?: (keyof Buildings)[];
     viewingPrerequisites: (
         | keyof Research
         | keyof Buildings
         | keyof Resources
     )[];
     cost: number;
+    description: string;
 }

@@ -15,6 +15,7 @@ import { SaveDataContext } from '../../../contexts/SaveDataContext';
 import { Research as IResearch } from '../../../interfaces/Research';
 import { AllResearchData } from '../../../static/ResearchData';
 import { splitCamelCase } from '../../../helper/Helper';
+import ResearchButton from './ResearchButton';
 
 function Research() {
     const { saveData } = useContext(SaveDataContext);
@@ -73,9 +74,11 @@ function Research() {
                             }
 
                             return (
-                                <Button key={key} variant="primary">
-                                    {splitCamelCase(key)}
-                                </Button>
+                                <ResearchButton
+                                    description={researchData.description}
+                                    researchName={key as keyof IResearch}
+                                    purchaseOnClick={() => {}}
+                                />
                             );
                         })}
                     </ResearchContainer>

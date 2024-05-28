@@ -4,46 +4,46 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
     [
         'copperMine',
         {
-            researchPrerequisites: [],
-            buildingPrerequisites: [],
             viewingPrerequisites: ['lumbermill', 'stoneQuarry', 'farm'],
             cost: 100,
+            description: 'Unlock the ability to create mines to gather copper',
         },
     ],
     [
         'tinMine',
         {
-            researchPrerequisites: [],
-            buildingPrerequisites: [],
             viewingPrerequisites: ['copperMine'],
             cost: 100,
+            description: 'Unlock the ability to create mines to gather tin',
         },
     ],
     [
         'smelting',
         {
-            researchPrerequisites: [],
-            buildingPrerequisites: [],
-            viewingPrerequisites: ['tinMine'],
+            buildingPrerequisites: ['copperMine', 'tinMine'],
+            researchPrerequisites: ['tinMine'],
+            viewingPrerequisites: ['copperMine'],
             cost: 100,
+            description:
+                'Unlock the ability to combine copper and tin to bronze',
         },
     ],
     [
         'clickingPower',
         {
-            researchPrerequisites: [],
-            buildingPrerequisites: [],
             viewingPrerequisites: ['lumbermill', 'stoneQuarry', 'farm'],
             cost: 100,
+            description:
+                'Increase the amount gathered when gathering resources by 1',
         },
     ],
     [
         'clickingPower2',
         {
-            researchPrerequisites: [],
-            buildingPrerequisites: [],
             viewingPrerequisites: ['clickingPower'],
             cost: 500,
+            description:
+                'Increase the amount gathered when gathering resources by 1',
         },
     ],
 ]);
