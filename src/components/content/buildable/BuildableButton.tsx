@@ -1,22 +1,22 @@
-import { useContext } from 'react';
 import { splitCamelCase } from '../../../helper/Helper';
 import { ActiveBuilding, Buildings } from '../../../interfaces/Buildings';
 import { AllBuildingData } from '../../../static/BuildingData';
 import HoverPopupExpandable from '../../hover-popup/HoverPopupExpandable';
 import BuildingPopup from './BuildingPopup';
 import { Button } from '@chakra-ui/react';
-import { SaveDataContext } from '../../../contexts/SaveDataContext';
+import { useContextSelector } from 'use-context-selector';
+import { SaveDataContext } from '../../providers/save-data-provider/SaveDataProvider';
 
 interface Props {
   buildingName: keyof Buildings;
 }
 
 function BuildableButton({ buildingName }: Props) {
-  const { saveData, purchaseBuildingIfPossible } = useContext(SaveDataContext);
+  const saveData = useContextSelector(SaveDataContext, (s) => s.state);
+  const buildings = saveData.buildings;
+  const dispatch = useContextSelector(SaveDataContext, (s) => s.dispatch);
 
-  const building = saveData.buildings[buildingName];
-
-  if (building.isHidden) return null;
+  if (buildings[buildingName].isHidden) return null;
 
   return (
     <HoverPopupExpandable
@@ -35,10 +35,10 @@ function BuildableButton({ buildingName }: Props) {
 
           let updates = {
             buildings: {
-              ...saveData.buildings,
+              ...buildings,
               [buildingName]: {
-                ...saveData.buildings[buildingName],
-                owned: saveData.buildings[buildingName].owned + 1,
+                ...buildings[buildingName],
+                owned: buildings[buildingName].owned + 1,
               },
             },
           };
@@ -48,9 +48,16 @@ function BuildableButton({ buildingName }: Props) {
               ...buildingData.saveDataUpdates(saveData),
             };
           }
-          const activeBuilding = building as ActiveBuilding;
+          const activeBuilding = buildings[buildingName] as ActiveBuilding;
           const isPassiveBuilding = activeBuilding.assigned === undefined;
-          purchaseBuildingIfPossible(buildingName, updates, isPassiveBuilding);
+          dispatch({
+            type: 'purchaseBuildingIfPossible',
+            payload: {
+              buildingName,
+              updates,
+              increaseRates: isPassiveBuilding,
+            },
+          });
         }}
       >
         {splitCamelCase(buildingName)}
