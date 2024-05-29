@@ -68,8 +68,7 @@ export function deserializeSaveData(serializedData: string): SaveData {
     const jsonString = atob(serializedData);
     return JSON.parse(jsonString);
   } catch (error) {
-    console.error('Error deserializing save data:', error);
-    return initialSaveData;
+    throw new Error('Unable to load save from this string');
   }
 }
 

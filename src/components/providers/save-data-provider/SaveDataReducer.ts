@@ -16,6 +16,11 @@ import {
 } from './Rates';
 import { PurchaseResearchAction, purchaseResearch } from './Research';
 
+interface ImportSaveAction {
+  type: 'importSave';
+  payload: SaveData;
+}
+
 interface ClearSaveAction {
   type: 'clearSave';
 }
@@ -36,7 +41,8 @@ export type SaveDataActions =
   | ClearSaveAction
   | CheckVisibilityConditionsAction
   | IncrementResourcesAction
-  | PurchaseResearchAction;
+  | PurchaseResearchAction
+  | ImportSaveAction;
 
 export function saveDataReducer(
   saveData: SaveData,
@@ -66,6 +72,8 @@ export function saveDataReducer(
       );
     case 'purchaseResearch':
       return purchaseResearch(saveData, action.payload);
+    case 'importSave':
+      return action.payload;
     case 'clearSave':
       return initialSaveData;
     default:

@@ -5,11 +5,15 @@ import { createContext } from 'use-context-selector';
 import { SaveData } from '../../../interfaces/SaveData';
 import { deserializeSaveData, serializeSaveData } from '../../../helper/Helper';
 
+const LOCAL_STORAGE_TOKEN_NAME = 'aoe_savedata';
+
 interface StateType {
   state: SaveData;
   dispatch: React.Dispatch<SaveDataActions>;
+  importSave(token: string): void;
   manualSave(): void;
   clearSave(): void;
+  getSaveData(): string;
 }
 
 export const SaveDataContext = createContext<StateType>({} as StateType);
@@ -19,7 +23,7 @@ function SaveDataProvider({ children }: { children: ReactNode }) {
     saveDataReducer,
     initialSaveData,
     (initial) => {
-      const savedData = localStorage.getItem('aoa_savedata');
+      const savedData = localStorage.getItem(LOCAL_STORAGE_TOKEN_NAME);
       return savedData ? deserializeSaveData(savedData) : initial;
     }
   );
@@ -31,19 +35,42 @@ function SaveDataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saveInterval = setInterval(() => {
-      localStorage.setItem('aoa_savedata', serializeSaveData(stateRef.current));
+      localStorage.setItem(
+        LOCAL_STORAGE_TOKEN_NAME,
+        serializeSaveData(stateRef.current)
+      );
     }, 60000);
 
     return () => clearInterval(saveInterval);
   }, []);
 
+  function importSave(token: string) {
+    try {
+      const saveData = deserializeSaveData(token);
+      dispatch({ type: 'importSave', payload: saveData });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   function manualSave() {
-    localStorage.setItem('aoa_savedata', serializeSaveData(stateRef.current));
+    localStorage.setItem(
+      LOCAL_STORAGE_TOKEN_NAME,
+      serializeSaveData(stateRef.current)
+    );
   }
 
   function clearSave() {
-    localStorage.removeItem('aoa_savedata');
+    localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
     dispatch({ type: 'clearSave' });
+  }
+
+  function getSaveData() {
+    manualSave();
+    return (
+      localStorage.getItem(LOCAL_STORAGE_TOKEN_NAME) ??
+      serializeSaveData(initialSaveData)
+    );
   }
 
   useEffect(() => {
@@ -60,7 +87,14 @@ function SaveDataProvider({ children }: { children: ReactNode }) {
 
   return (
     <SaveDataContext.Provider
-      value={{ state, dispatch, manualSave, clearSave }}
+      value={{
+        state,
+        dispatch,
+        importSave,
+        manualSave,
+        clearSave,
+        getSaveData,
+      }}
     >
       {children}
     </SaveDataContext.Provider>
