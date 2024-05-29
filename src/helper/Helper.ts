@@ -1,4 +1,3 @@
-import { initialSaveData } from '../static/InitialSaveData';
 import { Building, BuildingCosts } from '../interfaces/Buildings';
 import { Resources } from '../interfaces/Resources';
 import { SaveData } from '../interfaces/SaveData';
@@ -96,4 +95,14 @@ export function formatBigInt(value: bigint): string {
   }
 
   return `${formattedValue} ${suffixes[suffixIndex]}`;
+}
+
+export function formatTimestampToTime(timestamp: number): string {
+  const date = new Date(timestamp);
+  const options: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  };
+  return `[${date.toLocaleTimeString(undefined, options)}]`;
 }
