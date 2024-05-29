@@ -1,53 +1,70 @@
 import { Button, Flex } from '@chakra-ui/react';
-import { useContext } from 'react';
 import BuildableContainer from './BuildableContainer';
-import { SaveDataContext } from '../../../contexts/SaveDataContext';
 import BuildableButton from './BuildableButton';
 import { Buildings } from '../../../interfaces/Buildings';
+import { useContextSelector } from 'use-context-selector';
+import { SaveDataContext } from '../../providers/save-data-provider/SaveDataProvider';
 
 function Buildables() {
-  const { saveData, gatherResource } = useContext(SaveDataContext);
+  const buildings = useContextSelector(
+    SaveDataContext,
+    (s) => s.state.buildings
+  );
+  const dispatch = useContextSelector(SaveDataContext, (s) => s.dispatch);
 
-  const showHousesCategory = Object.values(saveData.buildings).some(
+  const showHousesCategory = Object.values(buildings).some(
     (building) => building.category === 'houses' && !building.isHidden
   );
 
-  const showResearchCategory = Object.values(saveData.buildings).some(
+  const showResearchCategory = Object.values(buildings).some(
     (building) => building.category === 'research' && !building.isHidden
   );
 
-  const showProductionCategory = Object.values(saveData.buildings).some(
+  const showProductionCategory = Object.values(buildings).some(
     (building) => building.category === 'production' && !building.isHidden
   );
 
-  const houseBuildings = Object.keys(saveData.buildings).filter(
+  const houseBuildings = Object.keys(buildings).filter(
     (buildingName) =>
-      saveData.buildings[buildingName as keyof Buildings].category === 'houses'
+      buildings[buildingName as keyof Buildings].category === 'houses'
   );
 
-  const productionBuildings = Object.keys(saveData.buildings).filter(
+  const productionBuildings = Object.keys(buildings).filter(
     (buildingName) =>
-      saveData.buildings[buildingName as keyof Buildings].category ===
-      'production'
+      buildings[buildingName as keyof Buildings].category === 'production'
   );
 
-  const researchBuildings = Object.keys(saveData.buildings).filter(
+  const researchBuildings = Object.keys(buildings).filter(
     (buildingName) =>
-      saveData.buildings[buildingName as keyof Buildings].category ===
-      'research'
+      buildings[buildingName as keyof Buildings].category === 'research'
   );
 
   return (
     <Flex direction="column" gap={4}>
       <BuildableContainer headingName="Gathering">
         <Flex gap={4} direction={{ base: 'column', md: 'row' }}>
-          <Button variant="primary" onClick={() => gatherResource('food')}>
+          <Button
+            variant="primary"
+            onClick={() =>
+              dispatch({ type: 'gatherResource', payload: { name: 'food' } })
+            }
+          >
             Gather Food
           </Button>
-          <Button variant="primary" onClick={() => gatherResource('lumber')}>
+          <Button
+            variant="primary"
+            onClick={() =>
+              dispatch({ type: 'gatherResource', payload: { name: 'lumber' } })
+            }
+          >
             Gather Lumber
           </Button>
-          <Button variant="primary" onClick={() => gatherResource('stone')}>
+          <Button
+            variant="primary"
+            onClick={() =>
+              dispatch({ type: 'gatherResource', payload: { name: 'stone' } })
+            }
+          >
             Gather Stone
           </Button>
         </Flex>

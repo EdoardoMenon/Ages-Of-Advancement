@@ -10,25 +10,34 @@ import {
 import ResearchContainer from './ResearchContainer';
 import { Buildings } from '../../../interfaces/Buildings';
 import { Resources } from '../../../interfaces/Resources';
-import { useContext } from 'react';
-import { SaveDataContext } from '../../../contexts/SaveDataContext';
 import { Research as IResearch } from '../../../interfaces/Research';
 import { AllResearchData } from '../../../static/ResearchData';
 import { splitCamelCase } from '../../../helper/Helper';
 import ResearchButton from './ResearchButton';
+import { useContextSelector } from 'use-context-selector';
+import { SaveDataContext } from '../../providers/save-data-provider/SaveDataProvider';
 
 function Research() {
-  const { saveData } = useContext(SaveDataContext);
+  const { research, buildings, resources } = useContextSelector(
+    SaveDataContext,
+    (s) => {
+      return {
+        research: s.state.research,
+        buildings: s.state.buildings,
+        resources: s.state.resources,
+      };
+    }
+  );
 
   function isPrerequisiteMet(
     prerequisite: keyof IResearch | keyof Buildings | keyof Resources
   ): boolean {
-    if (prerequisite in saveData.research) {
-      return saveData.research[prerequisite as keyof IResearch].isComplete;
-    } else if (prerequisite in saveData.buildings) {
-      return saveData.buildings[prerequisite as keyof Buildings].owned > 0;
-    } else if (prerequisite in saveData.resources) {
-      return !saveData.resources[prerequisite as keyof Resources].isHidden;
+    if (prerequisite in research) {
+      return research[prerequisite as keyof IResearch].isComplete;
+    } else if (prerequisite in buildings) {
+      return buildings[prerequisite as keyof Buildings].owned > 0;
+    } else if (prerequisite in resources) {
+      return !resources[prerequisite as keyof Resources].isHidden;
     }
     return false;
   }
@@ -41,11 +50,11 @@ function Research() {
     );
   }
 
-  const completedResearch = Object.entries(saveData.research).filter(
+  const completedResearch = Object.entries(research).filter(
     ([, value]) => value.isComplete
   );
 
-  const incompleteResearch = Object.entries(saveData.research).filter(
+  const incompleteResearch = Object.entries(research).filter(
     ([, value]) => !value.isComplete
   );
 

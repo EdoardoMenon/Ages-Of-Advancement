@@ -1,4 +1,4 @@
-import { initialSaveData } from '../contexts/InitialSaveData';
+import { initialSaveData } from '../static/InitialSaveData';
 import { Building, BuildingCosts } from '../interfaces/Buildings';
 import { Resources } from '../interfaces/Resources';
 import { SaveData } from '../interfaces/SaveData';
