@@ -23,7 +23,6 @@ export const AllResearchData = new Map<keyof Research, ResearchData>([
     'smelting',
     {
       buildingPrerequisites: ['copperMine', 'tinMine'],
-      researchPrerequisites: ['tinMine'],
       viewingPrerequisites: ['copperMine'],
       cost: 100,
       //TODO: Add building unlock for smelter which takes copper and tin and creates bronze
