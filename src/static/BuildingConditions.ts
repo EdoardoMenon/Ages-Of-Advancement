@@ -20,7 +20,7 @@ export function checkBuildingConditions(
     buildings.school.isHidden = false;
   }
   //Common House
-  if (resources.lumber.amount >= 10 && resources.stone.amount >= 10) {
+  if (resources.lumber.amount >= 5 && resources.stone.amount >= 5) {
     buildings.commonHouse.isHidden = false;
   }
 

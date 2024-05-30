@@ -16,7 +16,7 @@ export const AllBuildingData = new Map<keyof Buildings, BuildingData>([
           population: {
             ...saveData.population,
             maxWorkers: saveData.population.maxWorkers + 1,
-            availableWorkers: saveData.population.maxWorkers + 1,
+            availableWorkers: saveData.population.availableWorkers + 1,
           },
         };
       },
