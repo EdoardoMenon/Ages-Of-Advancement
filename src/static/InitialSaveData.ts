@@ -122,5 +122,5 @@ export const initialSaveData: SaveData = {
       color: 'assorted.green',
     },
   ],
-  clickingPower: 100,
+  clickingPower: 1,
 };
